@@ -3,12 +3,47 @@ package org.example;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args)  {
         String path = "C:\\Users\\Kirill\\IdeaProjects\\TestAufgabeMaven\\src\\main\\resources\\input.txt";
         ArrayList<Linie> linien = getLinesFromFile(path);
 
+        ArrayList<Linienzug> linienZuege = converLinienToLinienzuege(linien);
+
+    }
+
+    private static ArrayList<Linienzug> converLinienToLinienzuege(ArrayList<Linie> linien) {
+        ArrayList<Linienzug> linienZuege = new ArrayList<>();
+
+
+       for (int i = 0; i<linien.size();i++){
+           //init
+           Linienzug linienZug = new Linienzug();
+           linienZug.addLine(linien.get(i));
+
+           for (int j = 0; j<linien.size();j++){
+               //pass this
+                if(linien.get(i).equals(linien.get(j))){
+                    continue;
+                }
+
+                if(
+                        linien.get(i).getStartPoint().equals(linien.get(j).getStartPoint())
+                        ||linien.get(i).getStartPoint().equals(linien.get(j).getEndPoint())
+                        ||linien.get(i).getEndPoint().equals(linien.get(j).getStartPoint())
+                        ||linien.get(i).getEndPoint().equals(linien.get(j).getEndPoint())
+                ){
+                    linienZug.addLine(linien.get(j));
+                    break;
+                }
+
+           }
+       }
+
+
+        return linienZuege;
     }
 
     public static ArrayList<Linie> getLinesFromFile(String path){
