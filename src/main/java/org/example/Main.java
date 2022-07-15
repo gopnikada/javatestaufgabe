@@ -43,22 +43,20 @@ public class Main {
 //       }
 
         for (Linie mainLine:linien){
-            Linienzug linienZug = new Linienzug();
-            linienZug.addLine(mainLine);
+            Linienzug currentLinienZug = new Linienzug();
+            currentLinienZug.addLine(mainLine);
 
-            linien.removeAll(linienZug.getLinien());
+            linien.removeAll(currentLinienZug.getLinien());
+
             for (Linie lineToAdd:linien){
-                if(mainLine.equals(lineToAdd)){
-                    continue;
-                }
-
+                Linie lastLinieInZug = currentLinienZug.getLinien().get(currentLinienZug.getLinien().size()-1);
                 if(
-                        mainLine.getStartPoint().equals(lineToAdd.getStartPoint())
-                        ||mainLine.getStartPoint().equals(lineToAdd.getEndPoint())
-                        ||mainLine.getEndPoint().equals(lineToAdd.getStartPoint())
-                        ||mainLine.getEndPoint().equals(lineToAdd.getEndPoint())
+                        lastLinieInZug.getStartPoint().equals(lineToAdd.getStartPoint())
+                        ||lastLinieInZug.getStartPoint().equals(lineToAdd.getEndPoint())
+                        ||lastLinieInZug.getEndPoint().equals(lineToAdd.getStartPoint())
+                        ||lastLinieInZug.getEndPoint().equals(lineToAdd.getEndPoint())
                 ){
-                    linienZug.addLine(lineToAdd);
+                    currentLinienZug.addLine(lineToAdd);
                 }
             }
         }
