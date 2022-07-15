@@ -17,49 +17,34 @@ public class Main {
     private static ArrayList<Linienzug> converLinienToLinienzuege(ArrayList<Linie> linien) {
         ArrayList<Linienzug> linienZuege = new ArrayList<>();
 
+        linienZuege.add(new Linienzug());
+        var lastZug = linienZuege.get(linienZuege.size()-1);
 
-//       for (int i = 0; i<linien.size();i++){
-//           //init
-//           Linienzug linienZug = new Linienzug();
-//           linienZug.addLine(linien.get(i));
-//
-//           for (int j = 0; j<linien.size();j++){
-//               //pass this
-//                if(linien.get(i).equals(linien.get(j))){
-//                    continue;
-//                }
-//
-//                if(
-//                        linien.get(i).getStartPoint().equals(linien.get(j).getStartPoint())
-//                        ||linien.get(i).getStartPoint().equals(linien.get(j).getEndPoint())
-//                        ||linien.get(i).getEndPoint().equals(linien.get(j).getStartPoint())
-//                        ||linien.get(i).getEndPoint().equals(linien.get(j).getEndPoint())
-//                ){
-//                    linienZug.addLine(linien.get(j));
-//                    break;
-//                }
-//
-//           }
-//       }
+        for(Linie currentLine:linien){
 
-        for (Linie mainLine:linien){
-            Linienzug currentLinienZug = new Linienzug();
-            currentLinienZug.addLine(mainLine);
+            lastZug.addLine(currentLine);
 
-            linien.removeAll(currentLinienZug.getLinien());
-
-            for (Linie lineToAdd:linien){
-                Linie lastLinieInZug = currentLinienZug.getLinien().get(currentLinienZug.getLinien().size()-1);
-                if(
-                        lastLinieInZug.getStartPoint().equals(lineToAdd.getStartPoint())
-                        ||lastLinieInZug.getStartPoint().equals(lineToAdd.getEndPoint())
-                        ||lastLinieInZug.getEndPoint().equals(lineToAdd.getStartPoint())
-                        ||lastLinieInZug.getEndPoint().equals(lineToAdd.getEndPoint())
-                ){
-                    currentLinienZug.addLine(lineToAdd);
-                }
+            var foundNeighbors = linien.stream().filter(x->
+                            !x.equals(currentLine)
+                                    &&
+                                    (
+                                    currentLine.getStartPoint().equals(x.getStartPoint())
+                                    ||currentLine.getStartPoint().equals(x.getEndPoint())
+                                    ||currentLine.getEndPoint().equals(x.getStartPoint())
+                                    ||currentLine.getEndPoint().equals(x.getEndPoint())
+                            )
+                    ).toList();
+            if(foundNeighbors.size()==0){
+                continue;
+            }
+            else if(foundNeighbors.size()<3){
+                lastZug.addLine(foundNeighbors.get(0));
+            }else{
+                Linienzug lz = new Linienzug(currentLine);
+                linienZuege.add(lz);
             }
         }
+        linienZuege.stream().forEach(x->x.getLinien().stream().distinct().toList());
 
 
         return linienZuege;
